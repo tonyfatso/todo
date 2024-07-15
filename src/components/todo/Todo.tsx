@@ -10,7 +10,7 @@ export default function Todo() {
     const [tabIndex, setTabIndex] = useState(0);
 
     const handleAddTask = () => {
-        if ((newTask.trim() !== "") && (!tasks.find(task => task.text === newTask.trim()))) {
+        if (newTask.trim() !== "") {
             setTasks([...tasks, { id: tasks.length + 1, text: newTask, completed: false }])
             setNewTask("")
         }
