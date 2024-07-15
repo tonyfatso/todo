@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model landings {
+  id            Int            @id
+  name          String?        @db.VarChar(1024)
+  link_template String?        @db.VarChar(1024)
+  image         String?        @db.VarChar(1024)
+  observ_link   String?        @db.VarChar(1024)
+  offer_id      Int?
+  offers        offers?        @relation(fields: [offer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  landingsinfo  landingsinfo[]
+}
+
+model landingsinfo {
+  offer_id               Int
+  landing_id             Int
+  user_stream_display_id String      @db.VarChar(256)
+  landings               landings    @relation(fields: [landing_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  offers                 offers      @relation(fields: [offer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userstreams            userstreams @relation(fields: [user_stream_display_id], references: [display_id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([offer_id, landing_id, user_stream_display_id])
+}
+
+model offeraccesses {
+  offer_id Int
+  user_id  Int
+  allowed  Boolean?
+  offers   offers   @relation(fields: [offer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users    users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([offer_id, user_id])
+}
+
+model offers {
+  id             Int             @id
+  enabled        Boolean?
+  name           String?         @db.VarChar(1024)
+  image          String?         @db.VarChar(1024)
+  version        Int?
+  visibility     String?         @db.VarChar(16)
+  subcategory_id Int?
+  work_model_id  Int?
+  landings       landings[]
+  landingsinfo   landingsinfo[]
+  offeraccesses  offeraccesses[]
+  subcategory    subcategory?    @relation(fields: [subcategory_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  workmodel      workmodel?      @relation(fields: [work_model_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model subcategory {
+  id          Int      @id
+  subcategory String?  @db.VarChar(8)
+  offers      offers[]
+}
+
+model users {
+  id            Int             @id
+  email         String?         @db.VarChar(256)
+  offeraccesses offeraccesses[]
+  userstreams   userstreams[]
+}
+
+model userstreams {
+  id           Int?
+  user_id      Int?
+  disabled     Boolean?
+  display_id   String         @id @db.VarChar(256)
+  landingsinfo landingsinfo[]
+  users        users?         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model workmodel {
+  id         Int      @id
+  work_model String?  @db.VarChar(8)
+  offers     offers[]
+}

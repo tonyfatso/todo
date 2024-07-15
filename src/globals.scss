@@ -1,0 +1,22 @@
+$lightgray: #7990a5;
+
+@mixin H1_D($color) {
+    color: $lightgray;
+    font-size: 47px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 56px;
+    letter-spacing: -0.47px;
+    color: $color;
+    text-transform: lowercase;
+  }
+
+@mixin P1($color) {
+    font-size: 21px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 28px;
+    letter-spacing: -0.21px;
+    color: $color;
+    text-transform: lowercase;
+  }
